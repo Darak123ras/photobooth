@@ -1,53 +1,92 @@
+/* Full page */
 .studio {
   height: 100vh;
-  background: linear-gradient(135deg, #ff9aa2, #ffd1dc);
+  width: 100vw;
+  background: linear-gradient(135deg, #141414, #1f1f1f);
   display: grid;
-  grid-template-columns: 90px 1fr;
-  grid-template-rows: 1fr 120px;
+  grid-template-columns: 140px 1fr 200px;
+  grid-template-rows: 1fr auto;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: white;
   position: relative;
 }
 
-/* Left Tools */
+/* Left tools panel */
 .tools {
-  background: #ffffffaa;
-  backdrop-filter: blur(8px);
-  padding: 15px;
+  grid-column: 1;
+  grid-row: 1;
+  background: #cb7f7f;
+  border-radius: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  border-right: 1px solid #eee;
+  gap: 10px;
 }
 
 .tools button {
-  padding: 10px;
-  border-radius: 10px;
+  padding: 8px;
+  background: #2a2a2a;
   border: none;
+  color: white;
+  border-radius: 10px;
   cursor: pointer;
-  background: #fff;
-  font-weight: 500;
+  width: 100%;
 }
 
-/* Center */
+.tools button:hover {
+  background: #ff5f87;
+}
+
+/* Center preview */
 .preview {
+  grid-column: 2;
+  grid-row: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  margin: 10px;
 }
 
-/* Top Right */
+/* Right controls */
 .top-right {
-  position: absolute;
-  top: 15px;
-  right: 15px;
+  grid-column: 3;
+  grid-row: 1;
+  background: #1b1b1b;
+  border-radius: 18px;
+  padding: 20px;
   display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
 .top-right button {
-  background: white;
+  padding: 14px;
+  background: #ff5f87;
   border: none;
-  padding: 10px 18px;
-  border-radius: 20px;
+  color: white;
+  border-radius: 12px;
+  font-size: 1rem;
   cursor: pointer;
-  font-weight: 600;
+}
+
+.top-right button:hover {
+  background: #ff3f6f;
+}
+
+/* Template selector bottom */
+.templates {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: center;
+}
+.studio .hint {
+  position: absolute;
+  top: 0;
+
+  margin-top: 1.5rem;
+  font-size: .9rem;
+  color: #e7d8d8;
+  opacity: .7;
 }

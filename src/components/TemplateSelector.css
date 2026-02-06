@@ -1,16 +1,28 @@
 .templates {
-  grid-column: 1 / span 2;
-  background: #ffd6db;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
+  gap: 14px;
+  padding-top: 14px;
 }
 
 .template-thumb {
-  width: 80px;
-  height: 80px;
-  background: white;
-  border-radius: 10px;
+  width: 90px;
+  height: 60px;
+  background: #2b2b2b;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  color: white;
+  font-size: 0.8rem;
+  transition: 0.2s;
+}
+
+.template-thumb:hover {
+  background: #ff5f87;
+}
+
+.template-thumb.active {
+  background: #ff5f87;
+  box-shadow: 0 0 0 3px rgba(255,95,135,0.4);
 }

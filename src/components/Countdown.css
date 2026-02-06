@@ -10,3 +10,15 @@
   50% { transform: scale(1.3); }
   100% { transform: scale(1); }
 }
+
+.flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  animation: flash 0.3s ease;
+}
+
+@keyframes flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

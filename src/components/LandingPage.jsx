@@ -1,17 +1,28 @@
 import React from "react";
 import "./LandingPage.css";
+
 const LandingPage = ({ onStart }) => {
   return (
-    <div className="landing-container">
-      <h1 className="title">📸 Let's Take a Picture Together!</h1>
+    <div className="landing-wrapper">
+      <div className="landing-card">
 
-      <p className="subtitle">
-        Turn your moment into a memory in just one click.
-      </p>
+        <div className="logo">📸</div>
 
-      <button className="start-btn" onClick={onStart}>
-        Start the Photobooth
-      </button>
+        <h1 className="title">
+          Let's Take a Picture<br />Together
+        </h1>
+
+        <p className="subtitle">
+          A fun photobooth experience in your browser
+        </p>
+
+        <button className="start-btn" onClick={onStart}>
+          Start Photobooth
+        </button>
+
+        {/* <p className="hint">Press SPACE later to capture</p> */}
+
+      </div>
     </div>
   );
 };

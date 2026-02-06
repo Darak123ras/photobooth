@@ -7,11 +7,13 @@ import SampleTemplate from "./SampleTemplate";
 export default function Studio() {
   const [downloadFn, setDownloadFn] = useState(null);
 
+
   const [template, setTemplate] = useState("sample");
   const [resetKey, setResetKey] = useState(0);
 
   return (
     <div className="studio">
+
 
       <div className="tools">
         <button>Add Text</button>
@@ -20,16 +22,19 @@ export default function Studio() {
       </div>
 
       <div className="preview">
-        {template === "sample" && (
-          <SampleTemplate
-            resetSignal={resetKey}
-            onDownloadReady={setDownloadFn}
-          />
+        <h2 className="hint">Press SPACEBAR to capture</h2>
+        <SampleTemplate
+          resetSignal={resetKey}
+          onDownloadReady={setDownloadFn}
+          template={template}
+        />
 
-        )}
       </div>
 
-      <TemplateSelector setTemplate={setTemplate} />
+      <TemplateSelector
+        setTemplate={setTemplate}
+        activeTemplate={template}
+      />
 
       <div className="top-right">
         <button onClick={() => setResetKey(k => k + 1)}>
