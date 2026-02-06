@@ -1,0 +1,16 @@
+.templates {
+  grid-column: 1 / span 2;
+  background: #ffd6db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.template-thumb {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
