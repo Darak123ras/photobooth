@@ -39,7 +39,6 @@ export default function SampleTemplate({
   resetSignal,
   onDownloadReady,
   template,
-
   decorations,
   setDecorations
 }) {
@@ -48,22 +47,15 @@ export default function SampleTemplate({
      STATE
   ========================================= */
 
-  const [photos, setPhotos] =
-    useState(
-      TEMPLATE_MAP[template] ||
-      TEMPLATE_MAP.sample
-    );
+  const [
+    photos,
+    setPhotos
+  ] = useState(
+    TEMPLATE_MAP[template] ||
+    TEMPLATE_MAP.sample
+  );
 
 
-  /*
-    Current slot containing live camera.
-
-    0 = first photo
-    1 = second photo
-    etc.
-
-    null = session finished
-  */
   const [
     currentIndex,
     setCurrentIndex
@@ -82,10 +74,6 @@ export default function SampleTemplate({
   ] = useState(null);
 
 
-  /*
-    Which text / emoji is currently
-    selected for editing.
-  */
   const [
     selectedDecorationId,
     setSelectedDecorationId
@@ -108,20 +96,10 @@ export default function SampleTemplate({
     useRef(null);
 
 
-  /*
-    Stores video elements for each slot.
-
-    videoRefs.current[0]
-    videoRefs.current[1]
-    etc.
-  */
   const videoRefs =
     useRef([]);
 
 
-  /*
-    Prevent duplicate getUserMedia calls.
-  */
   const cameraStartingRef =
     useRef(false);
 
@@ -178,9 +156,6 @@ export default function SampleTemplate({
       );
 
 
-      /*
-        Camera starts inside first slot.
-      */
       setCurrentIndex(0);
 
 
@@ -273,11 +248,6 @@ export default function SampleTemplate({
     setSelectedDecorationId(null);
 
 
-    /*
-      Switching template means decorations
-      should disappear because positions from
-      old layout may no longer make sense.
-    */
     setDecorations([]);
 
 
@@ -344,11 +314,6 @@ export default function SampleTemplate({
       event
     ) {
 
-      /*
-        Important:
-        Do not trigger SPACE capture while
-        typing inside an input.
-      */
       const activeElement =
         document.activeElement;
 
@@ -375,9 +340,6 @@ export default function SampleTemplate({
       event.preventDefault();
 
 
-      /*
-        Already counting.
-      */
       if (
         isCounting
       ) {
@@ -385,9 +347,6 @@ export default function SampleTemplate({
       }
 
 
-      /*
-        No active frame means session done.
-      */
       if (
         currentIndex === null
       ) {
@@ -395,9 +354,6 @@ export default function SampleTemplate({
       }
 
 
-      /*
-        Camera must exist.
-      */
       if (
         !streamRef.current
       ) {
@@ -507,9 +463,6 @@ export default function SampleTemplate({
     let sourceHeight;
 
 
-    /*
-      Same behavior as object-fit: cover.
-    */
     if (
       videoRatio >
       targetRatio
@@ -571,7 +524,7 @@ export default function SampleTemplate({
 
     /* =====================================
        MIRROR PHOTO
-    ===================================== */
+    ========================================= */
 
     context.save();
 
@@ -618,7 +571,7 @@ export default function SampleTemplate({
 
     /* =====================================
        STORE PHOTO
-    ===================================== */
+    ========================================= */
 
     setPhotos(
       previousPhotos => {
@@ -639,7 +592,7 @@ export default function SampleTemplate({
 
     /* =====================================
        NEXT PHOTO
-    ===================================== */
+    ========================================= */
 
     const nextIndex =
       index + 1;
@@ -655,17 +608,11 @@ export default function SampleTemplate({
       );
 
 
-      /*
-        Automatically begin next countdown.
-      */
       setIsCounting(true);
 
 
     } else {
 
-      /*
-        Finished all photos.
-      */
       setCurrentIndex(null);
 
 
@@ -679,73 +626,6 @@ export default function SampleTemplate({
 
 
   /* =========================================
-     RESIZE DECORATION
-  ========================================= */
-
-  function resizeDecoration(
-    decorationId,
-    amount
-  ) {
-
-    setDecorations(
-      previous =>
-
-        previous.map(item => {
-
-          if (
-            item.id !==
-            decorationId
-          ) {
-
-            return item;
-
-          }
-
-
-          const minSize =
-            item.type === "emoji"
-              ? 20
-              : 14;
-
-
-          const maxSize =
-            item.type === "emoji"
-              ? 120
-              : 100;
-
-
-          const newSize =
-            Math.max(
-
-              minSize,
-
-              Math.min(
-
-                maxSize,
-
-                item.size +
-                amount
-
-              )
-
-            );
-
-
-          return {
-
-            ...item,
-
-            size: newSize
-
-          };
-
-        })
-
-    );
-  }
-
-
-  /* =========================================
      DELETE DECORATION
   ========================================= */
 
@@ -755,13 +635,11 @@ export default function SampleTemplate({
 
     setDecorations(
       previous =>
-
         previous.filter(
           item =>
             item.id !==
             decorationId
         )
-
     );
 
 
@@ -772,7 +650,7 @@ export default function SampleTemplate({
 
 
   /* =========================================
-     DRAG DECORATION
+     MOVE DECORATION
   ========================================= */
 
   function startDragging(
@@ -782,10 +660,9 @@ export default function SampleTemplate({
 
     event.preventDefault();
 
+    event.stopPropagation();
 
-    /*
-      Select decoration.
-    */
+
     setSelectedDecorationId(
       decorationId
     );
@@ -795,9 +672,7 @@ export default function SampleTemplate({
       templateRef.current;
 
 
-    if (
-      !frame
-    ) {
+    if (!frame) {
       return;
     }
 
@@ -806,57 +681,95 @@ export default function SampleTemplate({
       frame.getBoundingClientRect();
 
 
-    function moveDecoration(
+    const decoration =
+      decorations.find(
+        item =>
+          item.id ===
+          decorationId
+      );
+
+
+    if (!decoration) {
+      return;
+    }
+
+
+    const startPointerX =
+      event.clientX;
+
+
+    const startPointerY =
+      event.clientY;
+
+
+    const startX =
+      decoration.x;
+
+
+    const startY =
+      decoration.y;
+
+
+    function handleMove(
       moveEvent
     ) {
 
-      let x =
+      const deltaX =
+        moveEvent.clientX -
+        startPointerX;
+
+
+      const deltaY =
+        moveEvent.clientY -
+        startPointerY;
+
+
+      const deltaPercentX =
         (
-          (
-            moveEvent.clientX -
-            frameRect.left
-          ) /
+          deltaX /
           frameRect.width
         ) * 100;
 
 
-      let y =
+      const deltaPercentY =
         (
-          (
-            moveEvent.clientY -
-            frameRect.top
-          ) /
+          deltaY /
           frameRect.height
         ) * 100;
 
 
-      /*
-        Keep decoration inside frame.
-      */
+      let newX =
+        startX +
+        deltaPercentX;
 
-      x =
+
+      let newY =
+        startY +
+        deltaPercentY;
+
+
+      newX =
         Math.max(
           3,
           Math.min(
             97,
-            x
+            newX
           )
         );
 
 
-      y =
+      newY =
         Math.max(
           3,
           Math.min(
             97,
-            y
+            newY
           )
         );
 
 
       setDecorations(
         previous =>
-
           previous.map(item =>
 
             item.id ===
@@ -864,14 +777,13 @@ export default function SampleTemplate({
 
               ? {
                   ...item,
-                  x,
-                  y
+                  x: newX,
+                  y: newY
                 }
 
               : item
 
           )
-
       );
     }
 
@@ -880,7 +792,7 @@ export default function SampleTemplate({
 
       window.removeEventListener(
         "pointermove",
-        moveDecoration
+        handleMove
       );
 
 
@@ -894,7 +806,7 @@ export default function SampleTemplate({
 
     window.addEventListener(
       "pointermove",
-      moveDecoration
+      handleMove
     );
 
 
@@ -906,16 +818,161 @@ export default function SampleTemplate({
 
 
   /* =========================================
+     FREE RESIZE DECORATION
+  ========================================= */
+
+  function startResizing(
+    event,
+    decorationId
+  ) {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    setSelectedDecorationId(
+      decorationId
+    );
+
+
+    const decoration =
+      decorations.find(
+        item =>
+          item.id ===
+          decorationId
+      );
+
+
+    if (!decoration) {
+      return;
+    }
+
+
+    const startPointerX =
+      event.clientX;
+
+
+    const startPointerY =
+      event.clientY;
+
+
+    const startSize =
+      Number(
+        decoration.size
+      );
+
+
+    function handleResize(
+      moveEvent
+    ) {
+
+      const deltaX =
+        moveEvent.clientX -
+        startPointerX;
+
+
+      const deltaY =
+        moveEvent.clientY -
+        startPointerY;
+
+
+      /*
+        Bottom-right movement:
+        larger
+
+        Top-left movement:
+        smaller
+      */
+      const change =
+        (
+          deltaX +
+          deltaY
+        ) / 2;
+
+
+      const minSize =
+        decoration.type ===
+        "emoji"
+          ? 20
+          : 14;
+
+
+      const maxSize =
+        decoration.type ===
+        "emoji"
+          ? 150
+          : 120;
+
+
+      const newSize =
+        Math.max(
+          minSize,
+
+          Math.min(
+            maxSize,
+
+            startSize +
+            change
+          )
+        );
+
+
+      setDecorations(
+        previous =>
+          previous.map(item =>
+
+            item.id ===
+            decorationId
+
+              ? {
+                  ...item,
+                  size: newSize
+                }
+
+              : item
+
+          )
+      );
+    }
+
+
+    function stopResizing() {
+
+      window.removeEventListener(
+        "pointermove",
+        handleResize
+      );
+
+
+      window.removeEventListener(
+        "pointerup",
+        stopResizing
+      );
+
+    }
+
+
+    window.addEventListener(
+      "pointermove",
+      handleResize
+    );
+
+
+    window.addEventListener(
+      "pointerup",
+      stopResizing
+    );
+  }
+
+
+  /* =========================================
      DOWNLOAD
   ========================================= */
 
   const downloadImage =
     useCallback(
       async () => {
-
-        /* ===================================
-           VERIFY PHOTOS
-        =================================== */
 
         const completedPhotos =
           photos.filter(Boolean);
@@ -936,7 +993,7 @@ export default function SampleTemplate({
 
         /* ===================================
            EXPORT DIMENSIONS
-        =================================== */
+        ========================================= */
 
         const PHOTO_WIDTH =
           900;
@@ -1016,7 +1073,7 @@ export default function SampleTemplate({
 
         /* ===================================
            CREATE EXPORT CANVAS
-        =================================== */
+        ========================================= */
 
         const exportCanvas =
           document.createElement(
@@ -1038,9 +1095,6 @@ export default function SampleTemplate({
           );
 
 
-        /*
-          White opaque background.
-        */
         context.fillStyle =
           "#ffffff";
 
@@ -1063,7 +1117,7 @@ export default function SampleTemplate({
 
         /* ===================================
            LOAD PHOTOS
-        =================================== */
+        ========================================= */
 
         const loadedImages =
           await Promise.all(
@@ -1104,7 +1158,7 @@ export default function SampleTemplate({
 
         /* ===================================
            DRAW PHOTOS
-        =================================== */
+        ========================================= */
 
         loadedImages.forEach(
           (
@@ -1182,7 +1236,7 @@ export default function SampleTemplate({
 
         /* ===================================
            FOOTER
-        =================================== */
+        ========================================= */
 
         context.save();
 
@@ -1219,18 +1273,12 @@ export default function SampleTemplate({
 
         /* ===================================
            DRAW DECORATIONS
-        =================================== */
+        ========================================= */
 
         decorations.forEach(
           item => {
 
-            /*
-              x and y are percentages of
-              the displayed polaroid.
-            */
-
             const x =
-
               (
                 item.x /
                 100
@@ -1239,7 +1287,6 @@ export default function SampleTemplate({
 
 
             const y =
-
               (
                 item.y /
                 100
@@ -1357,7 +1404,7 @@ export default function SampleTemplate({
 
         /* ===================================
            DOWNLOAD PNG
-        =================================== */
+        ========================================= */
 
         const imageUrl =
           exportCanvas.toDataURL(
@@ -1404,10 +1451,6 @@ export default function SampleTemplate({
     }
 
 
-    /*
-      Important:
-      pass a function TO the React setter.
-    */
     onDownloadReady(
       () =>
         downloadImage
@@ -1427,16 +1470,13 @@ export default function SampleTemplate({
   return (
 
     <div
+
       className={
         `polaroid-frame layout-${photos.length}`
       }
 
       ref={templateRef}
 
-      /*
-        Clicking blank frame space
-        deselects decoration.
-      */
       onPointerDown={event => {
 
         if (
@@ -1451,11 +1491,12 @@ export default function SampleTemplate({
         }
 
       }}
+
     >
 
       {/* =====================================
           PHOTO SLOTS
-      ===================================== */}
+      ========================================= */}
 
       {photos.map(
         (
@@ -1471,6 +1512,7 @@ export default function SampleTemplate({
           return (
 
             <div
+
               key={index}
 
               className={
@@ -1480,11 +1522,16 @@ export default function SampleTemplate({
                     : ""
                 }`
               }
+
+              onPointerDown={() =>
+                setSelectedDecorationId(
+                  null
+                )
+              }
+
             >
 
-              {/* =================================
-                  CAPTURED PHOTO
-              ================================= */}
+              {/* CAPTURED PHOTO */}
 
               {photo && (
 
@@ -1503,9 +1550,7 @@ export default function SampleTemplate({
               )}
 
 
-              {/* =================================
-                  LIVE CAMERA
-              ================================= */}
+              {/* LIVE CAMERA */}
 
               {!photo &&
                 isActive &&
@@ -1544,9 +1589,7 @@ export default function SampleTemplate({
                 )}
 
 
-              {/* =================================
-                  EMPTY FUTURE SLOT
-              ================================= */}
+              {/* EMPTY FUTURE SLOT */}
 
               {!photo &&
                 !isActive && (
@@ -1566,9 +1609,7 @@ export default function SampleTemplate({
                 )}
 
 
-              {/* =================================
-                  COUNTDOWN
-              ================================= */}
+              {/* COUNTDOWN */}
 
               {isActive &&
                 isCounting && (
@@ -1588,9 +1629,7 @@ export default function SampleTemplate({
                 )}
 
 
-              {/* =================================
-                  CAMERA READY
-              ================================= */}
+              {/* CAMERA STATUS */}
 
               {!photo &&
                 isActive &&
@@ -1623,10 +1662,6 @@ export default function SampleTemplate({
 
         onPointerDown={event => {
 
-          /*
-            Clicking only empty decoration-layer
-            space deselects current item.
-          */
           if (
             event.target ===
             event.currentTarget
@@ -1682,9 +1717,6 @@ export default function SampleTemplate({
 
                 }}
 
-                /*
-                  Clicking or dragging selects it.
-                */
                 onPointerDown={
                   event =>
                     startDragging(
@@ -1692,11 +1724,10 @@ export default function SampleTemplate({
                       item.id
                     )
                 }
+
               >
 
-                {/* =================================
-                    CONTENT
-                ================================= */}
+                {/* DECORATION CONTENT */}
 
                 <span className="decoration-content">
 
@@ -1706,118 +1737,20 @@ export default function SampleTemplate({
 
 
                 {/* =================================
-                    EDIT CONTROLS
+                    EDIT HANDLES
                 ================================= */}
 
                 {isSelected && (
 
-                  <div
-                    className="decoration-controls"
+                  <>
 
-                    /*
-                      Do NOT start dragging when
-                      clicking control toolbar.
-                    */
-                    onPointerDown={
-                      event => {
-
-                        event.preventDefault();
-
-                        event.stopPropagation();
-
-                      }
-                    }
-                  >
-
-                    {/* =============================
-                        SMALLER
-                    ============================= */}
+                    {/* DELETE - TOP LEFT */}
 
                     <button
 
                       type="button"
 
-                      title="Make smaller"
-
-                      onPointerDown={
-                        event => {
-
-                          event.preventDefault();
-
-                          event.stopPropagation();
-
-                        }
-                      }
-
-                      onClick={
-                        event => {
-
-                          event.preventDefault();
-
-                          event.stopPropagation();
-
-
-                          resizeDecoration(
-                            item.id,
-                            -4
-                          );
-
-                        }
-                      }
-                    >
-                      −
-                    </button>
-
-
-                    {/* =============================
-                        BIGGER
-                    ============================= */}
-
-                    <button
-
-                      type="button"
-
-                      title="Make bigger"
-
-                      onPointerDown={
-                        event => {
-
-                          event.preventDefault();
-
-                          event.stopPropagation();
-
-                        }
-                      }
-
-                      onClick={
-                        event => {
-
-                          event.preventDefault();
-
-                          event.stopPropagation();
-
-
-                          resizeDecoration(
-                            item.id,
-                            4
-                          );
-
-                        }
-                      }
-                    >
-                      +
-                    </button>
-
-
-                    {/* =============================
-                        DELETE
-                    ============================= */}
-
-                    <button
-
-                      type="button"
-
-                      className="delete-decoration"
+                      className="decoration-delete"
 
                       title="Delete"
 
@@ -1845,11 +1778,31 @@ export default function SampleTemplate({
 
                         }
                       }
+
                     >
                       ×
                     </button>
 
-                  </div>
+
+                    {/* RESIZE - BOTTOM RIGHT */}
+
+                    <div
+
+                      className="decoration-resizer"
+
+                      title="Drag to resize"
+
+                      onPointerDown={
+                        event =>
+                          startResizing(
+                            event,
+                            item.id
+                          )
+                      }
+
+                    />
+
+                  </>
 
                 )}
 
