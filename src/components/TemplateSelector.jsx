@@ -1,29 +1,78 @@
 import "./TemplateSelector.css";
 
-export default function TemplateSelector({ setTemplate, activeTemplate }) {
+export default function TemplateSelector({
+  setTemplate,
+  activeTemplate
+}) {
+
+  const templates = [
+    {
+      id: "sample",
+      name: "Classic",
+      slots: 2
+    },
+
+    {
+      id: "triple",
+      name: "Triple",
+      slots: 3
+    },
+
+    {
+      id: "quad",
+      name: "Four",
+      slots: 4
+    }
+  ];
+
+
   return (
     <div className="templates">
 
-      <div
-        className={`template-thumb ${activeTemplate === "sample" ? "active" : ""}`}
-        onClick={() => setTemplate("sample")}
-      >
-        Sample
-      </div>
+      {templates.map(item => (
 
-      <div
-        className={`template-thumb ${activeTemplate === "triple" ? "active" : ""}`}
-        onClick={() => setTemplate("triple")}
-      >
-        Triple
-      </div>
+        <button
+          type="button"
+          key={item.id}
+          className={
+            `template-thumb ${
+              activeTemplate === item.id
+                ? "active"
+                : ""
+            }`
+          }
+          onClick={() =>
+            setTemplate(item.id)
+          }
+        >
 
-      <div
-        className={`template-thumb ${activeTemplate === "quad" ? "active" : ""}`}
-        onClick={() => setTemplate("quad")}
-      >
-        Quad
-      </div>
+          <div
+            className={
+              `mini-template mini-template-${item.slots}`
+            }
+          >
+
+            {Array.from({
+              length: item.slots
+            }).map((_, index) => (
+
+              <span
+                key={index}
+                className="mini-slot"
+              />
+
+            ))}
+
+          </div>
+
+
+          <span className="template-name">
+            {item.name}
+          </span>
+
+        </button>
+
+      ))}
 
     </div>
   );

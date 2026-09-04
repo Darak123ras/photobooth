@@ -1,23 +1,60 @@
+import {
+  useEffect,
+  useState
+} from "react";
 
 import "./Countdown.css";
-import { useEffect, useState } from "react";
 
-export default function Countdown({ onFinish }) {
-  const [num, setNum] = useState(3);
+export default function Countdown({
+  onFinish
+}) {
+
+  const [num, setNum] =
+    useState(3);
+
 
   useEffect(() => {
+
     if (num === 0) {
-      const video = document.querySelector(".photo-slot video");
-      onFinish(video);
+
+      onFinish();
+
       return;
+
     }
 
-    const t = setTimeout(() => {
-      setNum(n => n - 1);
-    }, 1000);
 
-    return () => clearTimeout(t);
-  }, [num]);
+    const timer =
+      setTimeout(() => {
 
-  return <div className="count">{num}</div>;
+        setNum(current =>
+          current - 1
+        );
+
+      }, 1000);
+
+
+    return () =>
+      clearTimeout(timer);
+
+  }, [num, onFinish]);
+
+
+  if (num === 0) {
+
+    return (
+      <div className="camera-flash" />
+    );
+
+  }
+
+
+  return (
+    <div
+      key={num}
+      className="count"
+    >
+      {num}
+    </div>
+  );
 }

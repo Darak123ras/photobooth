@@ -1,0 +1,85 @@
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+html {
+  min-height: 100vh;
+}
+
+
+body {
+  min-height: 100vh;
+
+  margin: 0;
+
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  overflow-x: hidden;
+
+  background: #fff7fa;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================
+   FORM ELEMENT RESET
+========================================= */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+button {
+  margin: 0;
+
+  border: none;
+
+  font-family: inherit;
+}
+
+
+/* keyboard accessibility */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(238, 109, 154, 0.3);
+  outline-offset: 3px;
+}
+
+
+/* =========================================
+   MEDIA
+========================================= */
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
